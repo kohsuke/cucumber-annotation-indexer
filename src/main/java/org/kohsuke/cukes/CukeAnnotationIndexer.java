@@ -61,8 +61,8 @@ public class CukeAnnotationIndexer extends AnnotationProcessorImpl {
 
     @Override
     protected boolean isIndexing(TypeElement ann) {
-        if (findAnnotationOn(ann, Before.class.getName())!=null
-         || findAnnotationOn(ann, After.class.getName())!=null)
+        if (ann.getQualifiedName().contentEquals(Before.class.getName())
+         || ann.getQualifiedName().contentEquals(After.class.getName()))
             return true;
 
         boolean b = findAnnotationOn(ann, STEP_DEF_ANNOTATION) != null;
