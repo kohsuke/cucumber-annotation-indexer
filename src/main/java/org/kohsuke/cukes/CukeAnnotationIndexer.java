@@ -15,10 +15,15 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.FileObject;
+import javax.tools.StandardLocation;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import static javax.lang.model.SourceVersion.*;
@@ -42,6 +47,23 @@ public class CukeAnnotationIndexer extends AnnotationProcessorImpl {
         super.execute(annotations, roundEnv);
 
         try {
+            Set<String> contents = new LinkedHashSet<String>();
+            try {
+                FileObject in = processingEnv.getFiler().getResource(StandardLocation.CLASS_OUTPUT, "", "META-INF/cucumber-annotations");
+                // Read existing content, for incremental compilation.
+                BufferedReader r = new BufferedReader(new InputStreamReader(in.openInputStream(),"UTF-8"));
+                try {
+                    String line;
+                    while ((line=r.readLine())!=null) {
+                        contents.add(line);
+                    }
+                } finally {
+                    r.close();
+                }
+            } catch (FileNotFoundException x) {
+                // this file is created for the first time
+            }
+
             FileObject out = processingEnv.getFiler().createResource(CLASS_OUTPUT,
                     "", "META-INF/cucumber-annotations",
                     stepDefTypes.toArray(new Element[stepDefTypes.size()]));
@@ -49,7 +71,9 @@ public class CukeAnnotationIndexer extends AnnotationProcessorImpl {
             PrintWriter w = new PrintWriter(new OutputStreamWriter(out.openOutputStream(),"UTF-8"));
             try {
                 for (TypeElement ann : stepDefTypes)
-                    w.println(ann.getQualifiedName());
+                    contents.add(ann.getQualifiedName().toString());
+                for (String content : contents)
+                    w.println(content);
             } finally {
                 w.close();
             }
