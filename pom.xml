@@ -28,6 +28,32 @@
     </site>
   </distributionManagement>
 
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <phase>process-classes</phase>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>info.cukes</groupId>
+                  <artifactId>cucumber-java</artifactId>
+                </artifactItem>
+              </artifactItems>
+              <outputDirectory>${project.build.directory}/classes</outputDirectory>
+              <excludes>cucumber/runtime/java/JavaBackend.class</excludes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
   <dependencies>
     <dependency>
       <groupId>org.kohsuke.metainf-services</groupId>
@@ -44,7 +70,11 @@
       <groupId>info.cukes</groupId>
       <artifactId>cucumber-java</artifactId>
       <version>1.1.5</version>
+      <scope>provided</scope>
     </dependency>
+
+    <!-- dependencies of cucumber-java because we'll exclue cucumber-java from callers -->
+
 
     <dependency>
       <groupId>junit</groupId>
