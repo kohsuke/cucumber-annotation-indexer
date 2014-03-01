@@ -12,5 +12,6 @@ step definitions and hooks at compile time. Thanks to [JSR-269](https://www.jcp.
 this happens automatically on Java6 and later. With the index in `/META-INF/annotations`, runtime can load
 all the step definitions quite efficiently.
 
-This library contains `BetterJavaBackend` implementation, which extends from the standard `JavaBackend`.
-Cucumber should find this backend automatically.
+This library contains `BetterJavaBackend` implementation, which replaces sthe standard `JavaBackend`.
+
+Put this jar in your dependency instead of `cucumber-java`, and Cucumber should find this backend automatically.
