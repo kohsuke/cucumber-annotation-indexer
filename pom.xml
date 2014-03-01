@@ -7,7 +7,7 @@
   </parent>
 
   <artifactId>cucumber-annotation-indexer</artifactId>
-  <version>1.2-SNAPSHOT</version>
+  <version>1.2</version>
 
   <name>Cucumber Annotation Indexer</name>
 
